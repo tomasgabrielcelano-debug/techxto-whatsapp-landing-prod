@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#0b1220"/>
+  <g fill="none" stroke="#eaf2ff" stroke-width="16" opacity="0.78">
+    <rect x="330" y="210" width="540" height="420" rx="36"/>
+    <path d="M420 310h360"/>
+    <path d="M420 390h360"/>
+    <path d="M420 470h260"/>
+    <path d="M720 470h60"/>
+    <path d="M420 550h220"/>
+  </g>
+  <text x="600" y="840" fill="#eaf2ff" opacity="0.72" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" font-size="44" font-weight="800" text-anchor="middle">Foto del producto</text>
+</svg>

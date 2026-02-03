@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#0b1220"/>
+  <g opacity="0.9">
+    <rect x="420" y="140" width="360" height="620" rx="48" fill="none" stroke="#eaf2ff" stroke-width="18" opacity="0.85"/>
+    <rect x="458" y="210" width="284" height="460" rx="28" fill="#0b1220" stroke="#eaf2ff" stroke-width="10" opacity="0.55"/>
+    <circle cx="600" cy="720" r="18" fill="#eaf2ff" opacity="0.55"/>
+    <rect x="540" y="170" width="120" height="14" rx="7" fill="#eaf2ff" opacity="0.55"/>
+  </g>
+  <text x="600" y="840" fill="#eaf2ff" opacity="0.72" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" font-size="44" font-weight="800" text-anchor="middle">Foto del equipo</text>
+</svg>

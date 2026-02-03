@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#0b1220"/>
+  <g fill="none" stroke="#eaf2ff" stroke-width="18" opacity="0.78" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M480 280l240 240"/>
+    <path d="M720 280L480 520"/>
+    <path d="M600 200v80"/>
+    <path d="M600 520v80"/>
+    <path d="M440 360h80"/>
+    <path d="M680 360h80"/>
+    <circle cx="600" cy="360" r="210" opacity="0.35"/>
+  </g>
+  <text x="600" y="840" fill="#eaf2ff" opacity="0.72" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" font-size="44" font-weight="800" text-anchor="middle">Servicio</text>
+</svg>
