@@ -34,3 +34,7 @@ export const ZONES_SPECIAL = ["Morón", "Haedo", "Castelar", "Ituzaingó"];
 
 export const GA4_ID = import.meta.env.VITE_GA4_ID;
 export const META_PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID;
+
+
+// Base URL para catálogo dinámico (Worker/KV). Ej: https://stock.techxto.ar
+export const STOCK_API_BASE = import.meta.env.VITE_STOCK_API_BASE ?? "";

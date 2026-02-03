@@ -1,19 +1,46 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import StockCard from "../components/StockCard";
 import StockFilters from "../components/StockFilters";
 import StickyWhatsApp from "../components/StickyWhatsApp";
-import { STOCK_CATEGORIES, STOCK_ITEMS, StockItem } from "../data/stock";
+import { STOCK_ITEMS as FALLBACK_ITEMS, StockItem } from "../data/stock";
 import { applyFilters } from "../lib/stock";
 import { buildWhatsAppUrl } from "../lib/whatsapp";
-import { WHATSAPP_PHONE } from "../config";
+import { STOCK_API_BASE, WHATSAPP_PHONE } from "../config";
 import { trackWhatsAppClick } from "../lib/analytics";
 
 export default function ProductosPage() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState<string>("Todas");
+  const [items, setItems] = useState<StockItem[]>(FALLBACK_ITEMS);
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    items.forEach((x) => set.add(x.category));
+    return Array.from(set);
+  }, [items]);
 
-  const filtered = useMemo(
-    () => applyFilters(STOCK_ITEMS, { q, category: category as any }),
+  useEffect(() => {
+    if (!STOCK_API_BASE) return;
+
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${STOCK_API_BASE.replace(/\/$/, "")}/stock`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as any;
+        const next = Array.isArray(data?.items) ? data.items : [];
+        // soporta "active": false para ocultar sin borrar
+        const visible = next.filter((x: any) => x?.active !== false);
+        if (visible.length) setItems(visible);
+      } catch {
+        // si falla, nos quedamos con el fallback local
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+    const filtered = useMemo(
+    () => applyFilters(items, { q, category: category as any }),
     [q, category]
   );
 
@@ -46,7 +73,7 @@ export default function ProductosPage() {
               setQ={setQ}
               category={category}
               setCategory={setCategory}
-              categories={STOCK_CATEGORIES}
+              categories={categories}
             />
 
             <div className="stockHeader">

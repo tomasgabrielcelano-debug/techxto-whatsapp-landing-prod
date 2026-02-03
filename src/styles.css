@@ -376,6 +376,7 @@ section[id]{ scroll-margin-top: 84px; }
 
 .stockCard{ display: grid; gap: 10px; }
 .stockMedia{
+  position: relative;
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(234,242,255,.12);
@@ -386,6 +387,46 @@ section[id]{ scroll-margin-top: 84px; }
   height: 180px;
   object-fit: cover;
   display: block;
+}
+
+/* Carousel (StockCard) */
+.carouselBtn{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(234,242,255,.18);
+  background: rgba(8,12,20,.55);
+  color: rgba(234,242,255,.92);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.carouselBtn:hover{ background: rgba(8,12,20,.72); }
+
+.carouselBtn.prev{ left: 10px; }
+.carouselBtn.next{ right: 10px; }
+
+.carouselDots{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.carouselDots .dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(234,242,255,.28);
+}
+.carouselDots .dot.active{
+  background: rgba(234,242,255,.75);
 }
 .stockTop{
   display: flex;
@@ -405,11 +446,12 @@ section[id]{ scroll-margin-top: 84px; }
 .stockBottom{
   margin-top: 8px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   gap: 10px;
-  flex-wrap: wrap;
 }
+.stockBtn{ width: 100%; }
+
 .stockPrice{
   font-weight: 1000;
   letter-spacing: -0.01em;

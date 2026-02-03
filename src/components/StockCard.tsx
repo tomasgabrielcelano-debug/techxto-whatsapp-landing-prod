@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import Badge from "./Badge";
 import { StockItem } from "../data/stock";
 
@@ -9,15 +9,48 @@ export default function StockCard({
   item: StockItem;
   onWhatsApp: (item: StockItem) => void;
 }) {
-  const img = item.imageUrl
-    || (item.category === "Accesorios" ? "/products/placeholder-accessory.svg"
-    : item.category === "Servicios" ? "/products/placeholder-service.svg"
-    : "/products/placeholder-phone.svg");
+  const images = useMemo(() => {
+    const fromItem = (item as any).imageUrls as string[] | undefined;
+    const arr = Array.isArray(fromItem) && fromItem.length ? fromItem : (item.imageUrl ? [item.imageUrl] : []);
+    if (arr.length) return arr;
+
+    // placeholders por categoría
+    const ph =
+      item.category === "Accesorios"
+        ? "/products/placeholder-accessory.svg"
+        : item.category === "Servicios"
+        ? "/products/placeholder-service.svg"
+        : "/products/placeholder-phone.svg";
+
+    return [ph];
+  }, [item]);
+
+  const [idx, setIdx] = useState(0);
+  const current = images[Math.min(idx, images.length - 1)] ?? images[0];
+
+  const prev = () => setIdx((v) => (v - 1 + images.length) % images.length);
+  const next = () => setIdx((v) => (v + 1) % images.length);
+
 
   return (
     <div className="card stockCard">
       <div className="stockMedia">
-        <img className="stockImg" src={img} alt={item.name} loading="lazy" />
+        <img className="stockImg" src={current} alt={item.name} loading="lazy" />
+        {images.length > 1 ? (
+          <>
+            <button className="carouselBtn prev" type="button" aria-label="Anterior" onClick={prev}>
+              ‹
+            </button>
+            <button className="carouselBtn next" type="button" aria-label="Siguiente" onClick={next}>
+              ›
+            </button>
+            <div className="carouselDots" aria-hidden="true">
+              {images.map((_, i) => (
+                <span key={i} className={"dot " + (i === idx ? "active" : "")} />
+              ))}
+            </div>
+          </>
+        ) : null}
       </div>
       <div className="stockTop">
         <div>
@@ -53,7 +86,7 @@ export default function StockCard({
 
       <div className="stockBottom">
         <div className="stockPrice">{item.price ?? "Consultar"}</div>
-        <button className="btn btnPrimary" onClick={() => onWhatsApp(item)}>
+        <button className="btn btnPrimary stockBtn" onClick={() => onWhatsApp(item)}>
           Consultar por WhatsApp
         </button>
       </div>

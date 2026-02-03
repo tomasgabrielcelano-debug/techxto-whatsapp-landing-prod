@@ -17,6 +17,7 @@ export type StockItem = {
   price?: string; // texto libre: "ARS 120.000" / "USD 250" / "Consultar"
   badge?: string; // ej. "OFERTA", "TOP", "ÚLTIMO"
   imageUrl?: string; // path en /public (ej: "/products/iphone13.jpg")
+  imageUrls?: string[]; // opcional: carrusel (prioriza sobre imageUrl)
 };
 
 export const STOCK_CATEGORIES: StockCategory[] = [

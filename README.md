@@ -39,3 +39,29 @@ Docker: `docker compose up --build -d`
 
 ### Nota (build en Linux/containers)
 Este proyecto llama Vite via `node ./node_modules/vite/bin/vite.js` para evitar problemas de permisos con `.bin` al descomprimir ZIP.
+
+
+## Catálogo dinámico (sin redeploy)
+La página puede leer el listado de productos desde una API externa (ideal para stock de usados que rota seguido).
+Configuración:
+- En Cloudflare Pages: `VITE_STOCK_API_BASE=https://stock.techxto.ar` (o tu dominio del Worker)
+- Endpoint esperado: `GET {BASE}/stock` -> `{ updatedAt, items: [...] }`
+- Cada item puede incluir `active: false` para ocultarlo sin borrarlo.
+- Para carrusel de fotos: usar `imageUrls: ["/products/a.webp", "/products/b.webp"]` (si no, `imageUrl`).
+
+### Worker + KV (PUT con token)
+Implementá un Worker con:
+- KV binding: `STOCK_KV`
+- Secret: `STOCK_ADMIN_TOKEN`
+
+Endpoints:
+- `GET /stock` (público)
+- `PUT /stock` (requiere header `Authorization: Bearer <TOKEN>`)
+
+Ejemplo PUT:
+```bash
+curl -X PUT "https://stock.techxto.ar/stock" \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -H "Content-Type: application/json" \
+  --data '{"items":[{"id":"ip13-128-a","name":"iPhone 13 128GB","category":"Celulares - iPhone usados","condition":"Usado","price":"Consultar","tags":["A+","batería 90%+"],"imageUrls":["/products/ip13a.webp","/products/ip13b.webp"],"active":true}]}'
+```
