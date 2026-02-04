@@ -12,6 +12,7 @@ export default function ProductosPage() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState<string>("Todas");
   const [items, setItems] = useState<StockItem[]>(FALLBACK_ITEMS);
+  const [loading, setLoading] = useState(false);
   const categories = useMemo(() => {
     const set = new Set<string>();
     items.forEach((x) => set.add(x.category));
@@ -41,7 +42,7 @@ export default function ProductosPage() {
 
     const filtered = useMemo(
     () => applyFilters(items, { q, category: category as any }),
-    [q, category]
+    [items, q, category]
   );
 
   const onWhatsApp = (item?: StockItem) => {
@@ -78,7 +79,11 @@ export default function ProductosPage() {
 
             <div className="stockHeader">
               <div className="muted">
-                Mostrando <strong>{filtered.length}</strong> producto(s)
+                {loading ? (
+                  <>Cargando catálogo…</>
+                ) : (
+                  <>Mostrando <strong>{filtered.length}</strong> producto(s)</>
+                )}
               </div>
             </div>
 
