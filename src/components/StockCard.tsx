@@ -31,10 +31,26 @@ export default function StockCard({
   const prev = () => setIdx((v) => (v - 1 + images.length) % images.length);
   const next = () => setIdx((v) => (v + 1) % images.length);
 
+  const [startX, setStartX] = useState<number | null>(null);
+
+  const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
+    if (images.length <= 1) return;
+    setStartX(e.clientX);
+  };
+
+  const onPointerUp: React.PointerEventHandler<HTMLDivElement> = (e) => {
+    if (images.length <= 1) return;
+    if (startX === null) return;
+    const dx = e.clientX - startX;
+    setStartX(null);
+    if (Math.abs(dx) < 35) return;
+    if (dx > 0) prev();
+    else next();
+  };
 
   return (
     <div className="card stockCard">
-      <div className="stockMedia">
+      <div className="stockMedia" style={{ ["--bgimg" as any]: `url(${current})` }} onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
         <img className="stockImg" src={current} alt={item.name} loading="lazy" />
         {images.length > 1 ? (
           <>

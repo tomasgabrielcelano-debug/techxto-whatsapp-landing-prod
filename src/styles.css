@@ -364,6 +364,17 @@ section[id]{ scroll-margin-top: 84px; }
   flex-wrap: wrap;
 }
 
+/* Indicator to show if we're using remote API or local fallback */
+.stockSource{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(234,242,255,.14);
+  background: rgba(234,242,255,.05);
+}
+.stockSource.remote{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08); }
+.stockSource.error{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.07); }
+
 .stockGrid{
   margin-top: 14px;
   display: grid;
@@ -374,19 +385,46 @@ section[id]{ scroll-margin-top: 84px; }
   .stockGrid{ grid-template-columns: 1fr; }
 }
 
-.stockCard{ display: grid; gap: 10px; }
+.stockCard{ display: grid; gap: 10px; height: 100%; }
 .stockMedia{
   position: relative;
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(234,242,255,.12);
-  background: rgba(234,242,255,.04);
+  background: rgba(10,14,24,.35);  touch-action: pan-y;
+}
+
+
+/* Blurred background derived from the current image (set via inline CSS var --bgimg) */
+.stockMedia::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--bgimg);
+  background-size: cover;
+  background-position: center;
+  filter: blur(22px);
+  transform: scale(1.2);
+  opacity: .55;
+  z-index: 0;
+}
+.stockMedia::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(7,11,22,.10) 0%, rgba(7,11,22,.55) 65%, rgba(7,11,22,.78) 100%);
+  z-index: 0;
 }
 .stockImg{
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  height: 220px;
+  object-fit: contain;
+  object-position: center center;
   display: block;
+  padding: 10px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 /* Carousel (StockCard) */
@@ -394,24 +432,27 @@ section[id]{ scroll-margin-top: 84px; }
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   border: 1px solid rgba(234,242,255,.18);
-  background: rgba(8,12,20,.55);
-  color: rgba(234,242,255,.92);
+  background: rgba(8,12,20,.45);
+  color: rgba(234,242,255,.95);
   display: grid;
   place-items: center;
   cursor: pointer;
   user-select: none;
+  z-index: 2; /* above image */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
-.carouselBtn:hover{ background: rgba(8,12,20,.72); }
-
+.carouselBtn:hover{ background: rgba(8,12,20,.65); }
 .carouselBtn.prev{ left: 10px; }
 .carouselBtn.next{ right: 10px; }
 
 .carouselDots{
   position: absolute;
+  z-index: 2; /* above image */
   left: 0;
   right: 0;
   bottom: 10px;
@@ -420,13 +461,13 @@ section[id]{ scroll-margin-top: 84px; }
   gap: 6px;
 }
 .carouselDots .dot{
-  width: 7px;
-  height: 7px;
+  width: 9px;
+  height: 9px;
   border-radius: 999px;
-  background: rgba(234,242,255,.28);
+  background: rgba(234,242,255,.35);
 }
 .carouselDots .dot.active{
-  background: rgba(234,242,255,.75);
+  background: rgba(55, 255, 168, .85);
 }
 .stockTop{
   display: flex;
@@ -444,7 +485,7 @@ section[id]{ scroll-margin-top: 84px; }
 .dotSep{ opacity: .6; }
 
 .stockBottom{
-  margin-top: 8px;
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   align-items: stretch;

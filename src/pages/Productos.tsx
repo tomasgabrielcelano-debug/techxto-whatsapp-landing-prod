@@ -13,6 +13,12 @@ export default function ProductosPage() {
   const [category, setCategory] = useState<string>("Todas");
   const [items, setItems] = useState<StockItem[]>(FALLBACK_ITEMS);
   const [loading, setLoading] = useState(false);
+
+  // dejamos estos estados por si querés loguear/diagnosticar en consola,
+  // pero ya NO se muestran en UI
+  const [, setSource] = useState<"fallback" | "remote" | "error">("fallback");
+  const [, setErrorMsg] = useState<string>("");
+
   const categories = useMemo(() => {
     const set = new Set<string>();
     items.forEach((x) => set.add(x.category));
@@ -25,22 +31,35 @@ export default function ProductosPage() {
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${STOCK_API_BASE.replace(/\/$/, "")}/stock`, { cache: "no-store" });
-        if (!res.ok) return;
+        setErrorMsg("");
+
+        const endpoint = `${STOCK_API_BASE.replace(/\/$/, "")}/stock`;
+        const res = await fetch(endpoint, { cache: "no-store" });
+
+        if (!res.ok) {
+          setSource("error");
+          setErrorMsg(`HTTP ${res.status}`);
+          return;
+        }
+
         const data = (await res.json()) as any;
         const next = Array.isArray(data?.items) ? data.items : [];
         // soporta "active": false para ocultar sin borrar
         const visible = next.filter((x: any) => x?.active !== false);
-        if (visible.length) setItems(visible);
+
+        setItems(visible);
+        setSource("remote");
       } catch {
         // si falla, nos quedamos con el fallback local
+        setSource("error");
+        setErrorMsg("fetch failed (CORS / network)");
       } finally {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [STOCK_API_BASE]);
 
-    const filtered = useMemo(
+  const filtered = useMemo(
     () => applyFilters(items, { q, category: category as any }),
     [items, q, category]
   );
@@ -55,7 +74,11 @@ export default function ProductosPage() {
   };
 
   const stickyHref = useMemo(
-    () => buildWhatsAppUrl(WHATSAPP_PHONE, "Hola! Quiero consultar por un equipo. Estoy en (ZONA A/B/C)."),
+    () =>
+      buildWhatsAppUrl(
+        WHATSAPP_PHONE,
+        "Hola! Quiero consultar por un equipo. Estoy en (ZONA A/B/C)."
+      ),
     []
   );
 
@@ -82,7 +105,9 @@ export default function ProductosPage() {
                 {loading ? (
                   <>Cargando catálogo…</>
                 ) : (
-                  <>Mostrando <strong>{filtered.length}</strong> producto(s)</>
+                  <>
+                    Mostrando <strong>{filtered.length}</strong> producto(s)
+                  </>
                 )}
               </div>
             </div>
